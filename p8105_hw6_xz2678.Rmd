@@ -1,0 +1,90 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(janitor)
+library(stringr)
+library(forcats)
+library(viridis)
+library(plotly)
+library(flexdashboard)
+```
+
+```{r}
+instacart <- read_csv("instacart_train_data.csv.zip")
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+# How many products are ordered in each hour of the day
+instacart%>%
+  filter(.,department =="produce")%>%
+  group_by(order_hour_of_day)%>%
+  summarize(n=n())%>%
+  plot_ly(x= ~order_hour_of_day, y=~n, color=~order_hour_of_day,type="bar")
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+#check the distribution of order hour of the day for the most popular 8 product in produce department
+popular_produce <- instacart%>%
+  select(department, product_name)%>%
+  filter(department =="produce")%>%
+  group_by(product_name)%>%
+  summarize(n=n())%>%
+  arrange(desc(n))%>%
+  top_n(8)%>%
+  ungroup()
+
+produce <- instacart%>%
+  select(department, product_name,order_hour_of_day)%>%
+  filter(department =="produce")
+  
+data_popular_produce <-  inner_join(popular_produce, produce, by="product_name")
+
+data_popular_produce%>%
+  arrange(n)%>%
+  plot_ly(x= ~product_name, y=~order_hour_of_day,color= ~product_name, type = "box" )
+  
+```
+
+### Chart C
+
+```{r}
+# check the distribution of orders in each day of week for the most populat 8 deparments
+popular_department <- instacart%>%
+  select(department)%>%
+  group_by(department)%>%
+  summarize(total=n())%>%
+  arrange(desc(total))%>%
+  top_n(8)%>%
+  ungroup()
+
+department <- instacart%>%
+  select(department, order_dow)
+
+data_popular_depart <-  inner_join(popular_department, department, by="department")%>%
+  group_by(department, order_dow)%>%
+  mutate(n=n())%>%
+  ungroup()
+
+data_popular_depart%>%
+  mutate(department= fct_reorder(department,total))%>%
+  plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )
+  
+```
+
