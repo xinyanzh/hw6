@@ -31,8 +31,9 @@ It shows that people generally place orders at noon and in the early afternoon.
 instacart%>%
   filter(.,department =="produce")%>%
   group_by(order_hour_of_day)%>%
-  summarize(n=n())%>%
-  plot_ly(x= ~order_hour_of_day, y=~n, color=~order_hour_of_day,type="bar")
+  summarize(number_of_order=n())%>%
+  mutate(text_label = str_c("Hour:", order_hour_of_day, '\nNumber of order ', number_of_order)) %>% 
+  plot_ly(x= ~order_hour_of_day, y=~number_of_order, text=~text_label,type="bar")
 ```
 
 Column {data-width=500}
@@ -84,7 +85,7 @@ data_popular_depart <-  inner_join(popular_department, department, by="departmen
 data_popular_depart%>%
   mutate(department = fct_reorder(department,total))%>%
   plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )%>%
-  layout(yaxis = list(c("Sun","Mon","Tue","Wed","Thur","Fri","Sat")))
+  layout(yaxis = list(range= c("Sun","Mon","Tue","Wed","Thur","Fri","Sat")))
 
 ```
 
