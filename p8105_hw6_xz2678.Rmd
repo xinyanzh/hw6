@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Analysis of Instacart Dataset"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -83,9 +83,8 @@ data_popular_depart <-  inner_join(popular_department, department, by="departmen
   ungroup()
 
 data_popular_depart%>%
-  mutate(department = fct_reorder(department,total))%>%
-  plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )%>%
-  layout(yaxis = list(range= c("Sun","Mon","Tue","Wed","Thur","Fri","Sat")))
+  mutate(department= fct_reorder(department,total))%>%
+  plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )
 
 ```
 
