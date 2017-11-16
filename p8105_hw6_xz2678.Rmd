@@ -24,6 +24,7 @@ Column {data-width=500}
 -----------------------------------------------------------------------
 
 ### Chart A
+It shows that people generally place orders at noon and in the early afternoon. 
 
 ```{r}
 # How many products are ordered in each hour of the day
@@ -38,9 +39,10 @@ Column {data-width=500}
 -----------------------------------------------------------------------
 
 ### Chart B
+It shows within the produce department, the order hour of the most 8 products are not significantly different.
 
 ```{r}
-#check the distribution of order hour of the day for the most popular 8 product in produce department
+#check the distribution of order hour of the day for the most popular 8 products in produce department
 popular_produce <- instacart%>%
   select(department, product_name)%>%
   filter(department =="produce")%>%
@@ -48,21 +50,17 @@ popular_produce <- instacart%>%
   summarize(n=n())%>%
   arrange(desc(n))%>%
   top_n(8)%>%
-  ungroup()
+  pull(product_name)
 
-produce <- instacart%>%
-  select(department, product_name,order_hour_of_day)%>%
-  filter(department =="produce")
-  
-data_popular_produce <-  inner_join(popular_produce, produce, by="product_name")
 
-data_popular_produce%>%
-  arrange(n)%>%
+instacart%>%
+  filter(product_name %in% popular_produce)%>%
   plot_ly(x= ~product_name, y=~order_hour_of_day,color= ~product_name, type = "box" )
-  
+ 
 ```
 
 ### Chart C
+It shows the distribution of orders over a week for 8 most populat department. The x-axis are ordered according to the overall number of orders.
 
 ```{r}
 # check the distribution of orders in each day of week for the most populat 8 deparments
@@ -80,11 +78,13 @@ department <- instacart%>%
 data_popular_depart <-  inner_join(popular_department, department, by="department")%>%
   group_by(department, order_dow)%>%
   mutate(n=n())%>%
+  distinct() %>% 
   ungroup()
 
 data_popular_depart%>%
-  mutate(department= fct_reorder(department,total))%>%
-  plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )
-  
+  mutate(department = fct_reorder(department,total))%>%
+  plot_ly(x= ~department, y=~order_dow,z=~n, type = "heatmap" )%>%
+  layout(yaxis = list(c("Sun","Mon","Tue","Wed","Thur","Fri","Sat")))
+
 ```
 
