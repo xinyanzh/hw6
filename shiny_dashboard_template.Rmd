@@ -9,7 +9,7 @@ output:
 
 Column {.sidebar}
 -----------------------------------------------------------------------
-
+We analysis the instacart dataset and produce the result as follows. To select a specific department, chart A is going to show the number of orders in different hours of a day in the chosen department. And chart B presents the distribution of order of 8 most popular products in the department over different hours of a day. Chart C conveys the distribution of order over the whole week of the chosen department. In addition, by choosing time range, chart A and C can change accordingly.
 ```{r}
 library(tidyverse)
 library(janitor)
