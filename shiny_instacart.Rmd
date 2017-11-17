@@ -3,7 +3,7 @@ title: "Analysis of Instacart Dataset Using Shiny"
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
-  runtime: shiny
+    runtime: shiny
 ---
 
 
